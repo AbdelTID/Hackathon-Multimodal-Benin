@@ -22,7 +22,7 @@ load_dotenv() ##load all the nevironment variables
 from transformers import pipeline
 
 # Create a speech recognition pipeline using a pre-trained model
-# pipe = pipeline("automatic-speech-recognition", model="chrisjay/fonxlsr")
+pipe = pipeline("automatic-speech-recognition", model="chrisjay/fonxlsr")
 
 REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 REPLICATE_MODEL_ENDPOINTSTABILITY = os.getenv("REPLICATE_MODEL_ENDPOINTSTABILITY")
@@ -179,16 +179,13 @@ if submit:
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
         st.success(f"File saved at {file_path}")
-
+        transcription = pipe(file_path)
         # Display the audio player widget
         # st.audio(file_path, format='audio/mp3')
-    # with st.chat_message("user"):
-    #     st.audio(uploaded_file.read(), format='audio/wav')
-    #     # print(uploaded_file)
-    #     transcription = pipe(file_path)
-        
-    #     print("Transcription:", transcription['text'])
-    #     button_pressed=transcription['text']
+    with st.chat_message("user"):
+        st.audio(uploaded_file.read(), format='audio/wav')
+        st.write(transcription['text'])
+        button_pressed=transcription['text']
 
 
 
