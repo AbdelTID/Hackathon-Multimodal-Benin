@@ -22,7 +22,7 @@ load_dotenv() ##load all the nevironment variables
 from transformers import pipeline
 
 # Create a speech recognition pipeline using a pre-trained model
-pipe = pipeline("automatic-speech-recognition", model="chrisjay/fonxlsr")
+# pipe = pipeline("automatic-speech-recognition", model="chrisjay/fonxlsr")
 
 REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 REPLICATE_MODEL_ENDPOINTSTABILITY = os.getenv("REPLICATE_MODEL_ENDPOINTSTABILITY")
@@ -162,22 +162,36 @@ button_cols = st.columns(3)
 
 button_pressed = ""
 
-if submit:
-    with st.chat_message("user"):
-        st.audio(uploaded_file.read(), format='audio/wav')
-        # print(uploaded_file)
-        transcription = pipe(uploaded_file)
-        
-        print("Transcription:", transcription['text'])
-        button_pressed=transcription['text']
-
-
 if button_cols[0].button(example_prompts[0]):
     button_pressed = example_prompts[0]
 elif button_cols[1].button(example_prompts[1]):
     button_pressed = example_prompts[1]
 elif button_cols[2].button(example_prompts[2]):
     button_pressed = example_prompts[2]
+
+if submit:
+    save_dir = "uploaded_audio_files"
+    if not os.path.exists(save_dir):
+        os.makedirs(save_dir)
+    if uploaded_file is not None:
+        # Save the file to the server
+        file_path = os.path.join(save_dir, uploaded_file.name)
+        with open(file_path, "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        st.success(f"File saved at {file_path}")
+
+        # Display the audio player widget
+        # st.audio(file_path, format='audio/mp3')
+    # with st.chat_message("user"):
+    #     st.audio(uploaded_file.read(), format='audio/wav')
+    #     # print(uploaded_file)
+    #     transcription = pipe(file_path)
+        
+    #     print("Transcription:", transcription['text'])
+    #     button_pressed=transcription['text']
+
+
+
 
 
 
