@@ -180,8 +180,20 @@ elif button_cols[2].button(example_prompts[2]):
     button_pressed = example_prompts[2]
 
 
-def main_func():
-    input1=prompt+" benin dish recipe"
+
+def main_func(prompt):
+
+
+    template=f"""
+    "You are a helpful, respectful, honest assistant and expect of Benin local dishes like amiwo, and atassi.
+      Always answer as helpfully as possible, while being safe. 
+      Analyse the given prompt and identify the main local dish and generate the recipe about it.
+
+      prompt:{prompt}
+     Please ensure that your responses are about Benin dishes recipe.
+    """
+
+    input1= template
     response=get_gemini_response(input1)
     st.subheader("The Recipe is")
     for chunk in response:
@@ -201,7 +213,7 @@ def main_func():
                     # "seed": 13,
                     "width": 512,
                     "height": 512,
-                    "prompt": prompt,
+                    "prompt": "Food photography, "+prompt,
                     "refine": "no_refiner",
                     "scheduler": "K_EULER",
                     "lora_scale": 0.6,
@@ -261,7 +273,7 @@ if prompt := (st.chat_input("What dish are you looking for? Express your mind!")
             st.write("⚙️ Model initiated")
             st.write("🙆‍♀️ Stand up and strecth in the meantime")
             try:
-                main_func()
+                main_func(prompt)
                 
             except Exception as e:
                 print(e)
