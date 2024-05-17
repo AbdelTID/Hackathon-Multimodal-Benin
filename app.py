@@ -230,7 +230,7 @@ def main_func(prompt):
                     # "seed": 13,
                     "width": 512,
                     "height": 512,
-                    "prompt": "Food photography, "+prompt+" ,Cinematic, Editorial Photography, Photography, Shot on 70mm lens, Depth of Field, Bokeh, DOF, Tilt Blur, Shutter Speed 1/1000, F/22, White Balance, 32k, Super-Resolution,full plate view",
+                    "prompt": prompt+" ,Cinematic, Editorial Photography,Food Photography, Shot on 70mm lens, Depth of Field, Bokeh, DOF, Tilt Blur, Shutter Speed 1/1000, F/22, White Balance, 32k, Super-Resolution,full plate view",
                     "refine": "no_refiner",
                     "scheduler": "K_EULER",
                     "lora_scale": 0.6,
@@ -238,7 +238,7 @@ def main_func(prompt):
                     "guidance_scale": 7.5,
                     "apply_watermark": True,
                     "high_noise_frac": 0.8,
-                    "negative_prompt": "the absolute worst quality, distorted features, artifacts noise, watermark, glitch, deformed, mutated, disfigured, low resolution,",
+                    "negative_prompt": "the absolute worst quality, distorted features, low resolution",
                     "prompt_strength": 0.8,
                     "num_inference_steps": 50
                 }
