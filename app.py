@@ -22,7 +22,8 @@ load_dotenv() ##load all the nevironment variables
 from transformers import pipeline
 
 # Create a speech recognition pipeline using a pre-trained model
-# pipe = pipeline("automatic-speech-recognition", model="chrisjay/fonxlsr")
+
+# pipe = pipeline("automatic-speech-recognition", "modeldir")
 
 REPLICATE_API_TOKEN = os.getenv("REPLICATE_API_TOKEN")
 REPLICATE_MODEL_ENDPOINTSTABILITY = os.getenv("REPLICATE_MODEL_ENDPOINTSTABILITY")
@@ -44,11 +45,13 @@ def display_chat_messages() -> None:
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
             if "images" in message:
-                for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
-                    cols = st.columns(NUM_IMAGES_PER_ROW)
-                    for j in range(NUM_IMAGES_PER_ROW):
-                        if i + j < len(message["images"]):
-                            cols[j].image(message["images"][i + j], width=200)
+                with st.container():
+                        st.image(message["images"])
+                # for i in range(0, len(message["images"]), NUM_IMAGES_PER_ROW):
+                #     cols = st.columns(NUM_IMAGES_PER_ROW)
+                #     for j in range(NUM_IMAGES_PER_ROW):
+                #         if i + j < len(message["images"]):
+                #             cols[j].image(message["images"][i + j], width=200)
 
 
 st.set_page_config(page_title="Nùɖúɖú",
@@ -61,10 +64,11 @@ st.title("Nùɖúɖú")
 
 with st.sidebar:
     st.title("Nùɖúɖú")
-    st.subheader("Benin Food Chat")
+    st.subheader("Benin Food Art")
     st.markdown(
         """Nùɖúɖú is a chatbot built for anyone interested in exploring and enjoying the rich culinary heritage of Benin. 
-        It offers  speech to image  as well as text to image generation about the local food of Benin (Atassi, Amiwo)"""
+        It offers  speech to image  as well as text to image generation about the local food of Benin (Atassi, Amiwo)
+        #BeninFoodArt """
     )
     uploaded_file = st.file_uploader("Choose an audio file", type=['wav', 'mp3', 'aac',"opus"])
     submit = st.button("Submit & Process")
@@ -184,7 +188,7 @@ elif button_cols[2].button(example_prompts[2]):
 #         # st.audio(file_path, format='audio/mp3')
 #     with st.chat_message("user"):
 #         st.audio(uploaded_file.read(), format='audio/wav')
-#         st.write(transcription['text'])
+#         # st.write(transcription['text'])
 #         button_pressed=transcription['text']
 
 
@@ -194,7 +198,7 @@ elif button_cols[2].button(example_prompts[2]):
 
 def main_func(prompt):
 
-
+    Text=[]
     template=f"""
     "You are a helpful, respectful, honest assistant and expect of Benin local dishes like amiwo, and atassi.
       Always answer as helpfully as possible, while being safe. 
@@ -208,23 +212,25 @@ def main_func(prompt):
     response=get_gemini_response(input1)
     st.subheader("The Recipe is")
     for chunk in response:
+        Text.append(chunk.text)
         print(st.write(chunk.text))
         print("_"*80)
     
-    # st.write(chat.history)
+    response = "".join(Text).strip()
+    # chat.history
 
-    # Only call the API if the "Submit" button was pressed
+    
     if prompt is not None :
         # Calling the replicate API to get the image
         with generated_images_placeholder.container():
-            all_images = []  # List to store all generated images
+            # all_images = []  # List to store all generated images
             output = replicate.run(
                 model_rep,
                 input={
                     # "seed": 13,
                     "width": 512,
                     "height": 512,
-                    "prompt": "Food photography, "+prompt,
+                    "prompt": "Food photography, "+prompt+" ,Cinematic, Editorial Photography, Photography, Shot on 70mm lens, Depth of Field, Bokeh, DOF, Tilt Blur, Shutter Speed 1/1000, F/22, White Balance, 32k, Super-Resolution,full plate view",
                     "refine": "no_refiner",
                     "scheduler": "K_EULER",
                     "lora_scale": 0.6,
@@ -232,7 +238,7 @@ def main_func(prompt):
                     "guidance_scale": 7.5,
                     "apply_watermark": True,
                     "high_noise_frac": 0.8,
-                    "negative_prompt": "the absolute worst quality, distorted features",
+                    "negative_prompt": "the absolute worst quality, distorted features, artifacts noise, watermark, glitch, deformed, mutated, disfigured, low resolution,",
                     "prompt_strength": 0.8,
                     "num_inference_steps": 50
                 }
@@ -250,7 +256,7 @@ def main_func(prompt):
                         st.image(image, caption="Generated Image 🎈", use_column_width=False)
         status.update(label="✅ Images generated!",state="complete", expanded=False)
     st.session_state.messages.append(
-    {"role": "assistant", "content": response["text"], "images": image}
+    {"role": "assistant", "content": response,"images": image} #"images": image
 )
     st.experimental_rerun()
 # wav_audio_data = st_audiorec() # tadaaaa! yes, that's it! :D
